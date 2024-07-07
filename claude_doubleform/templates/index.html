@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Name and Place Checker</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Name and Place Checker</h1>
+        
+        {% if error %}
+        <p class="error">{{ error }}</p>
+        {% endif %}
+
+        {% if success %}
+        <p class="success">{{ success }}</p>
+        {% endif %}
+
+        {% if not show_place_form %}
+        <form action="/submit_name" method="post">
+            <label for="name">Enter your name:</label>
+            <input type="text" id="name" name="name" required>
+            <button type="submit">Submit</button>
+        </form>
+        {% endif %}
+
+        {% if show_place_form %}
+        <form action="/submit_place" method="post">
+            <input type="hidden" name="name" value="{{ name }}">
+            <label for="place">Enter your place:</label>
+            <input type="text" id="place" name="place" required>
+            <button type="submit">Submit</button>
+        </form>
+        {% endif %}
+    </div>
+</body>
+</html>

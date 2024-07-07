@@ -1,0 +1,19 @@
+.search-container {
+    position: relative;
+    display: inline-block;
+}
+
+#search {
+    width: 200px;
+    padding: 5px;
+}
+
+/* Note: These styles may not affect the datalist dropdown in all browsers */
+#name-list {
+    max-height: 90px;
+    overflow-y: auto;
+}
+
+#name-list option {
+    padding: 5px;
+}

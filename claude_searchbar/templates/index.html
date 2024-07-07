@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Names</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='styles.css') }}">
+</head>
+<body>
+    <form method="post">
+        <div class="search-container">
+            <input type="text" name="search" id="search" list="name-list" autocomplete="off">
+            <datalist id="name-list">
+                {% for name in names %}
+                <option value="{{ name }}">
+                {% endfor %}
+            </datalist>
+            <input type="submit" value="Submit">
+        </div>
+    </form>
+
+    {% if selected %}
+    <p>Selected name: {{ selected }}</p>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>Convest Order Terminal</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="container">
+            <form method="post">
+                <div class="form-group">
+                    <label for="user_id">User ID:</label>
+                    <input type="text" placeholder="Enter User ID" id="user_id" name="user_id" pattern="\d{6}" title="Enter 6 digit number User ID" required>
+                </div>
+                <div class="form-group">
+                    <label for="api_key">API Key:</label>
+                    <input type="text" placeholder="Enter API Key" id="api_key" name="api_key" required>
+                </div>
+                <div class="form-group">
+                    <button class="btn">Login</button>
+                </div>
+                    <p>{{ login_status }}<p>
+            </form>
+        </div>
+
+        
+
+        <div class="container">
+            <div class="form-group">
+                <label>Search a Stock:</label>
+                <input type="text" placeholder="Enter Ticker Name">
+            </div>
+            <form method="post">
+                <div class="search-container">
+                    <input type="text" name="search" id="search" list="name-list" autocomplete="on">
+                    <datalist id="name-list">
+                        {% for name in names %}
+                        <option value="{{ name }}">
+                        {% endfor %}
+                    </datalist>
+                    <input type="submit" value="Submit">
+                </div>
+            </form>
+        
+            {% if selected %}
+            <p>Selected name: {{ selected }}</p>
+            {% endif %}
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convest Order Terminal</title>
+    <style>
+        /* Keep your original styles here */
+        /* Add this new style for the suggestions dropdown */
+        #suggestions {
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ddd;
+            max-height: 150px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+        .suggestion {
+            padding: 5px;
+            cursor: pointer;
+        }
+        .suggestion:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <form id="order-form">
+            <div class="header">
+                <input type="text" id="symbol-search" placeholder="Search for symbol...">
+                <div id="suggestions"></div>
+                <span id="symbol-valid"></span>
+                <input type="hidden" id="exchange">
+                <label class="toggle-switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="tab-group">
+                <div class="tab active">Regular</div>
+                <div class="tab">Cover</div>
+                <div class="tab">AMO</div>
+            </div>
+            <div class="form-group">
+                <div class="radio-group">
+                    <label><input type="radio" name="term" value="MIS"> Intraday MIS</label>
+                    <label><input type="radio" name="term" value="CNC" checked> Longterm CNC</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Qty:</label>
+                <input type="number" id="quantity" value="1">
+            </div>
+            <div class="form-group">
+                <label>Price:</label>
+                <input type="number" id="price" value="245">
+            </div>
+            <div class="form-group">
+                <label>Trigger price:</label>
+                <input type="number" value="0">
+            </div>
+            <div class="form-group">
+                <div class="radio-group">
+                    <label><input type="radio" name="order"> Market</label>
+                    <label><input type="radio" name="order" checked> Limit</label>
+                    <label><input type="radio" name="order"> SL</label>
+                    <label><input type="radio" name="order"> SL-M</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label id="margin">Margin required ₹245.00</label>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn">Buy</button>
+                <button type="button" class="btn btn-secondary">Cancel</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            let transactionType = 'buy';
+            let productType = 'CNC';
+
+            $('.toggle-switch input').change(function() {
+                transactionType = this.checked ? 'buy' : 'sell';
+                $('.slider').css('background-color', this.checked ? '#2196F3' : '#f44336');
+                $('button.btn').text(this.checked ? 'Buy' : 'Sell');
+            });
+
+            $('input[name="term"]').change(function() {
+                productType = $(this).val();
+            });
+
+            $('#symbol-search').on('input', function() {
+                let query = $(this).val();
+                if (query.length > 1) {
+                    $.get('/search?query=' + query, function(data) {
+                        let suggestions = '';
+                        data.forEach(function(item) {
+                            suggestions += `<div class="suggestion" data-symbol="${item.symbol}" data-exchange="${item.exchange}">${item.symbol} (${item.exchange})</div>`;
+                        });
+                        $('#suggestions').html(suggestions).show();
+                    });
+                } else {
+                    $('#suggestions').hide();
+                }
+            });
+
+            $(document).on('click', '.suggestion', function() {
+                let symbol = $(this).data('symbol');
+                let exchange = $(this).data('exchange');
+                $('#symbol-search').val(symbol);
+                $('#exchange').val(exchange);
+                $('#suggestions').hide();
+                validateSymbol(symbol, exchange);
+            });
+
+            function validateSymbol(symbol, exchange) {
+                $.post('/validate_symbol', {symbol: symbol, exchange: exchange}, function(data) {
+                    $('#symbol-valid').text(data.valid ? 'Valid' : 'Invalid');
+                });
+            }
+
+            $('#order-form').submit(function(e) {
+                e.preventDefault();
+                let formData = {
+                    symbol: $('#symbol-search').val(),
+                    exchange: $('#exchange').val(),
+                    transaction_type: transactionType,
+                    product_type: productType,
+                    quantity: $('#quantity').val(),
+                    price: $('#price').val()
+                };
+                $.post('/place_order', formData, function(data) {
+                    if (data.success) {
+                        alert('Order placed successfully. Order ID: ' + data.order_id);
+                    } else {
+                        alert('Error placing order: ' + data.error);
+                    }
+                });
+            });
+
+            $('#quantity, #price').on('input', function() {
+                let quantity = $('#quantity').val();
+                let price = $('#price').val();
+                let margin = quantity * price;
+                $('#margin').text('Margin required: ₹' + margin.toFixed(2));
+            });
+        });
+    </script>
+</body>
+</html>

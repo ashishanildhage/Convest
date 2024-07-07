@@ -1,0 +1,52 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.slider {
+    width: 100px;
+    height: 50px;
+    background-color: #ddd;
+    border-radius: 25px;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.toggle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    transition: left 0.3s ease;
+}
+
+.toggle-left {
+    left: 0;
+    background-color: blue;
+}
+
+.toggle-right {
+    left: 50px;
+    background-color: red;
+}
+
+/*buy sell text colour*/
+p { 
+    font-size: 18px;
+    color: green;
+    font-weight: bold;
+}

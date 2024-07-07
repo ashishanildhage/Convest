@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Toggle Slider</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <form action="/toggle" method="post">
+      <input
+        type="hidden"
+        name="state"
+        value="{{ 'right' if state == 'left' else 'left' }}"
+      />
+      <div class="slider">
+        <button
+          type="submit"
+          class="toggle {{ 'toggle-left' if state == 'left' else 'toggle-right' }}"
+        ></button>
+      </div>
+    </form>
+    <p>{{ action }}</p>
+  </body>
+</html>
